@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "/pokemon-go/static/js/main.f54d71e0.js",
+    "static/js/787.91fd401c.chunk.js": "/pokemon-go/static/js/787.91fd401c.chunk.js",
+    "index.html": "/pokemon-go/index.html",
+    "main.f54d71e0.js.map": "/pokemon-go/static/js/main.f54d71e0.js.map",
+    "787.91fd401c.chunk.js.map": "/pokemon-go/static/js/787.91fd401c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.f54d71e0.js"
+  ]
+}
