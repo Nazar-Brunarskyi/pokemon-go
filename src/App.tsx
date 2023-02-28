@@ -1,8 +1,15 @@
-import React from 'react';
+import { GridMainTemplate } from './components/gridMainTemplate';
+import { Header } from './components/header';
 
 function App() {
   return (
-    <h1>initial</h1>
+    <div className='container'>
+      <div className="container__full-screen">
+        <Header />
+
+        <GridMainTemplate />
+      </div>
+    </div>
   );
 }
 

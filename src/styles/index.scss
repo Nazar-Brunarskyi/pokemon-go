@@ -1,0 +1,11 @@
+@import './variables.scss';
+@import './reset.scss';
+@import './container.scss';
+@import './grid-main-template.scss';
+@import './PokemonsInfo.scss';
+@import './CustomTable.scss';
+
+body, html {
+  height: 100%;
+  overflow: hidden;
+}

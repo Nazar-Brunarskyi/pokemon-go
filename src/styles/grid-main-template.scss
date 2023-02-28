@@ -1,0 +1,36 @@
+.grid-main-template {
+  display: grid;
+  grid-template-columns: 65% auto;
+  max-height: 100%;
+
+  &__first-column {
+    min-height: calc(100vh - #{$header-height});
+    max-height: calc(100vh - #{$header-height}  );
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+
+  &__second-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
