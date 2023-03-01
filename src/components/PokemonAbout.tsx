@@ -17,7 +17,7 @@ export const PokemonAbout: FC = memo(
         <CardActionArea>
           <CardMedia
             component="img"
-            height="200"
+            height="250"
             image="https://cdn.vox-cdn.com/thumbor/8JToQParkzu_gl5zKmHzGenN17o=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/23673901/unnamed.jpg"
             alt="green iguana"
           />

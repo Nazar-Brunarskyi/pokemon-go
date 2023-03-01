@@ -2,10 +2,10 @@ export function getData<T>(url: string): Promise<T> {
   return fetch(url)
     .then(response => {
       if (!response.ok) {
-        throw new Error('something went wrong, try later!')
+        console.log(response);
+        throw new Error('Problems with loading!')
       }
-
+      
       return response.json();
-    })
-    .catch(error => alert(error.message));
+    });
 }

@@ -1,8 +1,12 @@
 import { getData } from "./GetData";
-import { PokemonResult } from "../types.ts/PokemonResult";
+import { PokemonResponse } from "../types.ts/PokemonResponse";
 
-export async function fetchData(url: string) {
-  const data = await getData<PokemonResult>(url);
+export async function fetchPokemonsData(url: string) {
+  try {
+    const data = await getData<PokemonResponse>(url);
 
-  return data;
+    return data;
+  } catch (err) {
+    throw new Error('can\'t load pokemons')
+  }
 }

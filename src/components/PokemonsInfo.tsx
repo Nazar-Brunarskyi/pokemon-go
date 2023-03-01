@@ -2,18 +2,24 @@ import { FC, memo } from 'react';
 import Container from '@mui/material/Container';
 import { PacemonCard } from './pacemonCard';
 import { CastomButton } from './button';
+import { PokemonResult } from '../types.ts/PokemonResult';
 
-export const PokemonsInfo: FC = memo(
-  () => {
+interface Props {
+  pokemons: PokemonResult[],
+}
+
+export const PokemonsInfo: FC<Props> = memo(
+  ({ pokemons }) => {
     return (
       <Container maxWidth="lg">
         <div className='PokemonsInfo__grid'>
-          <PacemonCard />
-          <PacemonCard />
-          <PacemonCard />
-          <PacemonCard />
-          <PacemonCard />
-          <PacemonCard />
+          {
+            pokemons.map(pokemon => (
+              <PacemonCard pokemon={pokemon}
+                key={pokemon.name}
+              />
+            ))
+          }
         </div>
 
         <div style={{

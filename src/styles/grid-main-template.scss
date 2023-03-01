@@ -1,25 +1,28 @@
 .grid-main-template {
   display: grid;
-  grid-template-columns: 65% auto;
+  grid-template-columns: 1fr 400px;
   max-height: 100%;
+  max-width: 1500px;
+  margin: auto;
 
   &__first-column {
+    position: relative;
     min-height: calc(100vh - #{$header-height});
     max-height: calc(100vh - #{$header-height}  );
     overflow: auto;
 
     &::-webkit-scrollbar {
-      width: 12px;
+      width: 5px;
       height: 12px;
     }
     
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: transparent;
       border-radius: 10px;
     }
     
     &::-webkit-scrollbar-thumb {
-      background: #888;
+      background: #aaaaaa;
       border-radius: 10px;
     }
     
