@@ -1,14 +1,20 @@
-import { FC, memo } from 'react';
+import { FC, Fragment, memo } from 'react';
 
-export const CustomTable: FC = memo(
-  () => {
+interface Props {
+  tableRows: [string, string | number][];
+}
+
+export const CustomTable: FC<Props> = memo(
+  ({ tableRows }) => {
     return (
       <table className="table">
         <tbody>
-          <tr className="table__row">
-            <td className="table__colum">1</td>
-            <td className="table__colum">1</td>
-          </tr>
+          {tableRows.map(row => (
+            <tr className="table__row" key={row[0]}>
+              <td className="table__colum" style={{ fontWeight: 'bold' }}>{row[0]}</td>
+              <td className="table__colum">{row[1]}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     );

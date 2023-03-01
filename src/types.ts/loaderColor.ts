@@ -1,0 +1,1 @@
+export type LoaderColor = "error" | "success" | "info" | "warning" | "inherit" | "primary" | "secondary" | undefined;

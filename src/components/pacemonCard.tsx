@@ -12,10 +12,11 @@ import Alert from '@mui/material/Alert';
 
 interface Props {
   pokemon: PokemonResult
+  onSelect: (pokemon: PokemonData | null) => void;
 }
 
 export const PacemonCard: FC<Props> = memo(
-  ({ pokemon }) => {
+  ({ pokemon, onSelect }) => {
     const [loadedPokemon, setLoadedPokemon] = useState<PokemonData | null>(null);
     const [isError, setError] = useState(false);
 
@@ -53,10 +54,13 @@ export const PacemonCard: FC<Props> = memo(
 
     useEffect(() => {
       getPokemon(pokemon.url);
-    }, [])
+    }, [pokemon])
 
     return (
-      <Card sx={{ maxWidth: 250 }}>
+      <Card
+        onClick={() => onSelect(loadedPokemon)}
+        sx={{ maxWidth: 250 }}
+      >
         <CardActionArea sx={{ height: '300px' }}>
           {loadedPokemon && !isError && (
             <>
@@ -81,11 +85,6 @@ export const PacemonCard: FC<Props> = memo(
                     fontWeight: 'bold',
                   }}>
                   {loadedPokemon?.name}
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica
                 </Typography>
               </CardContent>
             </>

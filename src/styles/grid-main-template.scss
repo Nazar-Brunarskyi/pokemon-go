@@ -4,6 +4,11 @@
   max-height: 100%;
   max-width: 1500px;
   margin: auto;
+  transition: grid-template-columns 0.3s ease;
+
+  &--second-hidden {
+    grid-template-columns: 1fr 0px;
+  }
 
   &__first-column {
     position: relative;
@@ -35,5 +40,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
 }
