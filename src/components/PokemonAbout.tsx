@@ -27,8 +27,10 @@ export const PokemonAbout: FC<Props> = memo(
       })
 
       info.types = pokemonToParse.types
-        .reduce((acc, type) => acc + type.type.name + ' ', '')
+        .reduce((acc, type) => acc + type.type.name + ', ', '')
         .trim();
+
+      info.types = info.types.slice(0, info.types.length - 1)
 
       return Object.entries(info);
     }
