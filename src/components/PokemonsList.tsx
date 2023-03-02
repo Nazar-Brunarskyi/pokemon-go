@@ -42,7 +42,6 @@ export const PokemonsList: FC = memo(
                   <PacemonCard
                     key={pokemon?.name}
                     pokemon={pokemon}
-                    visibleTypes={visibleTypes}
                   />
                 ))
               )

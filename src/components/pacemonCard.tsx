@@ -12,13 +12,11 @@ import { PokemonContext } from '../context/pokemonContext';
 
 interface Props {
   pokemon: PokemonData | undefined
-  visibleTypes: string[]
 }
 
 export const PacemonCard: FC<Props> = memo(
   ({
     pokemon,
-    visibleTypes,
   }) => {
     const {
       toggleTypes,
