@@ -1,3 +1,5 @@
+import { typesOfPokemons } from "./typesOfPokemons";
+
 export interface PokemonStat {
   base_stat: number;
   effort: number;
@@ -34,6 +36,7 @@ export interface PokemonData {
   stats: PokemonStat[];
   abilities: PokemonAbility[];
   types: PokemonType[];
+  preparedTypes?: typesOfPokemons[]
   weight: number;
   sprites: Sprites
 }

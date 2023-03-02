@@ -14,12 +14,15 @@ interface ContextType {
   pokemons: (PokemonData | undefined)[];
   selectedPokemon: PokemonData | null;
   visibleTypes: string[];
+  setVisibleTypes: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedPokemon: React.Dispatch<React.SetStateAction<PokemonData | null>>;
   getTypes: (pokemonTypesToParse: PokemonType[]) => typesOfPokemons[] | void;
   getPokemon: (url: string) => Promise<PokemonData | undefined> | void;
   getPokemons: () => Promise<void> | void;
   getNewSetOfPokemons: () => Promise<boolean> | void;
   toggleTypes: (type: string) => void;
+  selectPokemon: (pokemon: PokemonData | null) => void;
+  hidePokemon: () => void
 }
 
 export const PokemonContext = createContext<ContextType>({
@@ -27,20 +30,24 @@ export const PokemonContext = createContext<ContextType>({
   pokemons: [],
   selectedPokemon: null,
   visibleTypes: [],
+  setVisibleTypes: () => { },
   setSelectedPokemon: () => { },
   getTypes: () => { },
   getPokemon: () => { },
   getPokemons: () => { },
   getNewSetOfPokemons: () => { },
   toggleTypes: () => { },
+  selectPokemon: () => { },
+  hidePokemon: () => { },
 });
 
 export const PokemonProvider: FC<Props> = ({ children }) => {
   const [pokemons, setPokemons] = useState<(PokemonData | undefined)[]>([]);
-  const [nextPokemonSetLink, setNextPokemonSetLink] = useState<string | null>();
+  const [nextPokemonSetLink, setNextPokemonSetLink] = useState<string | null>(null);
   const [isError, setError] = useState(false);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonData | null>(null);
   const [visibleTypes, setVisibleTypes] = useState<string[]>([]);
+
 
   const getTypes = useCallback(
     (pokemonTypesToParse: PokemonType[]) => {
@@ -79,7 +86,7 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
           weight,
         } = await data.json();
 
-        types = getTypes(types);
+        const preparedTypes = getTypes(types);
 
         return {
           name,
@@ -87,6 +94,7 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
           stats,
           abilities,
           types,
+          preparedTypes,
           sprites,
           weight,
         };
@@ -107,13 +115,11 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
           GET_POKEMONS_URL
         );
 
-        const pokemons = await Promise.all(
+        const newPokemons = await Promise.all(
           results.map((pokemon) => getPokemon(pokemon.url))
         );
 
-        console.log(pokemons);
-
-        setPokemons(pokemons);
+        setPokemons(newPokemons);
         setNextPokemonSetLink(next);
       } catch (err) {
         setError(true);
@@ -122,30 +128,34 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
     [getPokemon]
   )
 
-  const getNewSetOfPokemons = async () => {
-    try {
-      if (!nextPokemonSetLink) {
-        throw new Error('can\'t load more')
+  const getNewSetOfPokemons = useCallback(
+    async () => {
+      try {
+        if (!nextPokemonSetLink) {
+          throw new Error('can\'t load more')
+        }
+        const {
+          next,
+          results,
+        } = await fetchPokemonsData(
+          nextPokemonSetLink,
+        );
+
+        const newPokemons = await Promise.all(
+          results.map((pokemon) => getPokemon(pokemon.url))
+        );
+
+        setPokemons(pokemons => [...pokemons, ...newPokemons]);
+
+        setNextPokemonSetLink(next);
+      } catch (err) {
+        setError(true);
+      } finally {
+        return true;
       }
-      const {
-        next,
-        results,
-      } = await fetchPokemonsData(
-        nextPokemonSetLink,
-      );
-
-      const newPokemons = await Promise.all(
-        results.map((pokemon) => getPokemon(pokemon.url))
-      );
-
-      setPokemons(pokemons => [...pokemons, ...newPokemons]);
-      setNextPokemonSetLink(next);
-    } catch (err) {
-      setError(true);
-    } finally {
-      return true;
-    }
-  }
+    },
+    [nextPokemonSetLink, getPokemon]
+  );
 
   const toggleTypes = useCallback((type: string) => {
     setVisibleTypes(typesFromOldState => {
@@ -158,9 +168,32 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
     })
   }, [])
 
+  const selectPokemon = useCallback(
+    (pokemon: PokemonData | null) => {
+      setSelectedPokemon(pokemon);
+    },
+    []
+  )
+
+  const hidePokemon = useCallback(
+    () => {
+      setSelectedPokemon(null);
+    },
+    []
+  )
+
   useEffect(() => {
     getPokemons();
   }, [getPokemons])
+
+  useEffect(() => {
+    console.log(pokemons);
+  }, [pokemons])
+
+  useEffect(() => {
+    console.log(nextPokemonSetLink);
+
+  }, [nextPokemonSetLink])
 
   return (
     <PokemonContext.Provider value={{
@@ -168,12 +201,15 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
       pokemons,
       selectedPokemon,
       visibleTypes,
+      setVisibleTypes,
       setSelectedPokemon,
       getTypes,
       getPokemon,
       getPokemons,
       getNewSetOfPokemons,
       toggleTypes,
+      selectPokemon,
+      hidePokemon
     }}>
       {children}
     </PokemonContext.Provider>

@@ -1,15 +1,18 @@
 import { GridMainTemplate } from './components/gridMainTemplate';
 import { Header } from './components/header';
+import { PokemonProvider } from './context/pokemonContext';
 
 function App() {
   return (
-    <div className='container'>
-      <div className="container__full-screen">
-        <Header />
+    <PokemonProvider>
+      <div className='container'>
+        <div className="container__full-screen">
+          <Header />
 
-        <GridMainTemplate />
+          <GridMainTemplate />
+        </div>
       </div>
-    </div>
+    </PokemonProvider>
   );
 }
 

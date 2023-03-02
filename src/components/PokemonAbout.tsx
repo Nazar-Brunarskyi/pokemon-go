@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useContext } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -8,14 +8,16 @@ import { CustomTable } from './CustomTable';
 import { NOT_FOUND_IMG } from '../links';
 import { PokemonData } from '../types.ts/PokemonTypes';
 import { CustomButton } from './button';
+import { PokemonContext } from '../context/pokemonContext';
 
 interface Props {
   pokemon: PokemonData;
-  onHide: () => void;
 }
 
 export const PokemonAbout: FC<Props> = memo(
-  ({ pokemon, onHide }) => {
+  ({ pokemon }) => {
+    const { hidePokemon } = useContext(PokemonContext);
+
     const getInfo = (pokemonToParse: PokemonData): [string, string | number][] => {
       const info: any = {};
       info.weight = pokemonToParse.weight;
@@ -30,7 +32,6 @@ export const PokemonAbout: FC<Props> = memo(
 
       return Object.entries(info);
     }
-
 
     return (
       <Card sx={{ width: 250 }} >
@@ -69,7 +70,7 @@ export const PokemonAbout: FC<Props> = memo(
             <CustomButton
               text='Hide'
               styles={{ margin: '10px', width: '50%' }}
-              onClick={onHide}
+              onClick={hidePokemon}
             />
           </div>
         </CardActionArea>
