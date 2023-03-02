@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useContext } from 'react';
+import { FC, memo, useContext } from 'react';
 import { Loader } from './Loader';
 import { PokemonAbout } from './PokemonAbout';
 import { PokemonsList } from './PokemonsList';
@@ -10,13 +10,9 @@ export const GridMainTemplate: FC = memo(
   () => {
     const {
       isError,
-      pokemons,
+      isLoaded,
       selectedPokemon,
     } = useContext(PokemonContext);
-
-    useEffect(() => {
-      console.log(pokemons);
-    }, [pokemons])
 
     return (
       <div className={
@@ -26,11 +22,13 @@ export const GridMainTemplate: FC = memo(
         })
       }>
         <div className='grid-main-template__first-column'>
-          {pokemons.length > 0 && !isError && (
+          {isLoaded && !isError && (
             <PokemonsList />
           )}
 
-          {pokemons.length === 0 && !isError && <Loader />}
+          {!isLoaded && !isError && <Loader />}
+
+          
 
           {isError && (
             <Alert

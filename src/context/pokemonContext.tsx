@@ -14,6 +14,8 @@ interface ContextType {
   pokemons: (PokemonData | undefined)[];
   selectedPokemon: PokemonData | null;
   visibleTypes: string[];
+  visiblePokemons: (PokemonData | undefined)[];
+  isLoaded: boolean,
   setVisibleTypes: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedPokemon: React.Dispatch<React.SetStateAction<PokemonData | null>>;
   getTypes: (pokemonTypesToParse: PokemonType[]) => typesOfPokemons[] | void;
@@ -30,6 +32,8 @@ export const PokemonContext = createContext<ContextType>({
   pokemons: [],
   selectedPokemon: null,
   visibleTypes: [],
+  visiblePokemons: [],
+  isLoaded: false,
   setVisibleTypes: () => { },
   setSelectedPokemon: () => { },
   getTypes: () => { },
@@ -47,6 +51,7 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
   const [isError, setError] = useState(false);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonData | null>(null);
   const [visibleTypes, setVisibleTypes] = useState<string[]>([]);
+  const [isLoaded, setIsloaded] = useState(false);
 
 
   const getTypes = useCallback(
@@ -65,7 +70,7 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
       }, []);
     },
     []
-  )
+  );
 
   const getPokemon = useCallback(
     async (url: string): Promise<PokemonData | undefined> => {
@@ -103,10 +108,12 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
       }
     },
     [getTypes],
-  )
+  );
 
   const getPokemons = useCallback(
     async () => {
+      setIsloaded(false);
+
       try {
         const {
           next,
@@ -123,10 +130,12 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
         setNextPokemonSetLink(next);
       } catch (err) {
         setError(true);
+      } finally {
+        setIsloaded(true);
       }
     },
     [getPokemon]
-  )
+  );
 
   const getNewSetOfPokemons = useCallback(
     async () => {
@@ -166,34 +175,44 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
 
       return [...typesFromOldState, type];
     })
-  }, [])
+  }, []);
 
   const selectPokemon = useCallback(
     (pokemon: PokemonData | null) => {
       setSelectedPokemon(pokemon);
     },
     []
-  )
+  );
 
   const hidePokemon = useCallback(
     () => {
       setSelectedPokemon(null);
     },
     []
-  )
+  );
+
+  const filterByType = useCallback(
+    () => (
+      pokemons.filter(pokemon => {
+        for (const { type } of pokemon?.preparedTypes || []) {
+          if (visibleTypes.includes(type)) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+    ),
+    [pokemons, visibleTypes]
+  );
 
   useEffect(() => {
     getPokemons();
   }, [getPokemons])
 
-  useEffect(() => {
-    console.log(pokemons);
-  }, [pokemons])
-
-  useEffect(() => {
-    console.log(nextPokemonSetLink);
-
-  }, [nextPokemonSetLink])
+  const visiblePokemons = visibleTypes.length === 0
+    ? pokemons
+    : filterByType();;
 
   return (
     <PokemonContext.Provider value={{
@@ -201,6 +220,8 @@ export const PokemonProvider: FC<Props> = ({ children }) => {
       pokemons,
       selectedPokemon,
       visibleTypes,
+      visiblePokemons,
+      isLoaded,
       setVisibleTypes,
       setSelectedPokemon,
       getTypes,

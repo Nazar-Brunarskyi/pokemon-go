@@ -4,6 +4,7 @@ import { PacemonCard } from './pacemonCard';
 import { CustomButton } from './button';
 import { TypeSelector } from './typeSelector';
 import { PokemonContext } from '../context/pokemonContext';
+import Alert from '@mui/material/Alert';
 
 export const PokemonsList: FC = memo(
   () => {
@@ -11,7 +12,7 @@ export const PokemonsList: FC = memo(
 
     const {
       visibleTypes,
-      pokemons,
+      visiblePokemons,
       toggleTypes,
       setVisibleTypes,
       getNewSetOfPokemons,
@@ -35,13 +36,25 @@ export const PokemonsList: FC = memo(
 
         <div className='PokemonsList__grid'>
           {
-            pokemons.map(pokemon => (
-              <PacemonCard
-                key={pokemon?.name}
-                pokemon={pokemon}
-                visibleTypes={visibleTypes}
-              />
-            ))
+            visiblePokemons.length > 0
+              ? (
+                visiblePokemons.map(pokemon => (
+                  <PacemonCard
+                    key={pokemon?.name}
+                    pokemon={pokemon}
+                    visibleTypes={visibleTypes}
+                  />
+                ))
+              )
+              : <Alert
+                severity="warning"
+                sx={{
+                  gridColumn: '1 / span all',
+                  fontSize: '16px'
+                }}
+              >
+                there aren't any pokemon which fit your filter params
+              </Alert>
           }
         </div>
 
