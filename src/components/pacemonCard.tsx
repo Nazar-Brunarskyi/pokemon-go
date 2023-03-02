@@ -65,7 +65,7 @@ export const PacemonCard: FC<Props> = memo(
                     {pokemon?.name}
                   </Typography>
 
-                  <div className='type-selector type-selector--on-card'>
+                  <div className='type-selector__grid type-selector__grid--on-card'>
                     {
                       pokemon.preparedTypes?.map(({ color, type }) => (
                         <CustomButton

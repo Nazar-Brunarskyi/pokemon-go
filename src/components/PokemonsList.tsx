@@ -70,7 +70,8 @@ export const PokemonsList: FC = memo(
             styles={{
               width: '80%',
               maxWidth: '600px',
-              marginBottom: '50px '
+              marginBottom: '50px',
+              textAlign: 'center',
             }}
           />
         </div>

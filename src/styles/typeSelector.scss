@@ -1,15 +1,27 @@
 .type-selector {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(20px, 110px));
-  grid-auto-rows: 40px;
-  align-items: center;
-  justify-items: center;
   margin-top: 50px;
-  justify-content: center;
 
-  &--on-card {
-    grid-template-columns: repeat(auto-fill, minmax(20px, 75px));
+  &__title {
+    margin-bottom: 20px;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    letter-spacing: 2px;
+  }
 
+  &__grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(20px, 110px));
+    grid-auto-rows: 40px;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+
+    &--on-card {
+      grid-template-columns: repeat(auto-fill, minmax(20px, 75px));
+
+    }
   }
 }
