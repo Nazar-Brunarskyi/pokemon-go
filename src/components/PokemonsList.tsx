@@ -1,9 +1,11 @@
-import { FC, memo, useState } from 'react';
+import { FC, memo, useCallback, useState, } from 'react';
 import Container from '@mui/material/Container';
 import { PacemonCard } from './pacemonCard';
-import { CastomButton } from './button';
+import { CustomButton } from './button';
 import { PokemonResult } from '../types.ts/PokemonResult';
 import { PokemonData } from '../types.ts/PokemonTypes';
+import { TypeSelector } from './typeSelector';
+import { useIncrement } from '../hooks/useIncrement';
 
 interface Props {
   pokemons: PokemonResult[],
@@ -18,24 +20,47 @@ export const PokemonsList: FC<Props> = memo(
     onPokemonSelect,
   }) => {
     const [showLoader, setShowLoader] = useState(false);
+    const [visibleTypes, setVisibleTypes] = useState<string[]>([]);
+    const [shownPokemons, incrementShownPokemons] = useIncrement();
 
-    const handleLoading = async () => {
-      setShowLoader(true);
+    const toggleTypes = useCallback((type: string) => {
+      incrementShownPokemons();
 
-      await onLoad();
+      setVisibleTypes(typesFromOldState => {
+        if (typesFromOldState.includes(type)) {
+          return typesFromOldState
+            .filter(typeOfPokemon => typeOfPokemon !== type)
+        }
 
-      setShowLoader(false);
-    };
+        return [...typesFromOldState, type];
+      })
+    }, [])
+
+    const handleLoading = useCallback(
+      async () => {
+        setShowLoader(true);
+        setVisibleTypes([]);
+
+        await onLoad();
+
+        setShowLoader(false);
+      },
+      [onLoad]
+    );
 
     return (
       <Container maxWidth="lg">
-        <div className='PokemonsInfo__grid'>
+        <TypeSelector onTypeSelect={toggleTypes} selectedTypes={visibleTypes} />
+
+        <div className='PokemonsList__grid'>
           {
             pokemons.map(pokemon => (
               <PacemonCard
-                onSelect={onPokemonSelect}
-                pokemon={pokemon}
                 key={pokemon.name}
+                onTypeSelect={toggleTypes}
+                onPokemonSelect={onPokemonSelect}
+                pokemon={pokemon}
+                visibleTypes={visibleTypes}
               />
             ))
           }
@@ -46,13 +71,14 @@ export const PokemonsList: FC<Props> = memo(
           justifyContent: 'center',
           marginBottom: '50px'
         }}>
-          <CastomButton
+          <CustomButton
             onClick={handleLoading}
             isLoading={showLoader}
-            text='Load More'
+            text={visibleTypes.length ? 'reset all filters and load more' : 'Load More'}
             styles={{
               width: '80%',
-              maxWidth: '600px'
+              maxWidth: '600px',
+              marginBottom: '50px '
             }}
           />
         </div>

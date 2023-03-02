@@ -1,64 +1,105 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import { PokemonResult } from '../types.ts/PokemonResult';
-import { PokemonData } from '../types.ts/PokemonTypes';
+import { PokemonData, PokemonType } from '../types.ts/PokemonTypes';
 import { Loader } from './Loader';
 import { NOT_FOUND_IMG } from '../links';
 import Alert from '@mui/material/Alert';
+import { CustomButton } from './button';
+import { typesOfPokemons } from '../types.ts/typesOfPokemons';
+import { allPokemonTypes as typeObjects } from '../additionalData/allPokemonTypes';
 
 interface Props {
   pokemon: PokemonResult
-  onSelect: (pokemon: PokemonData | null) => void;
+  visibleTypes: string[]
+  onPokemonSelect: (pokemon: PokemonData | null) => void;
+  onTypeSelect: (type: string) => void;
 }
 
 export const PacemonCard: FC<Props> = memo(
-  ({ pokemon, onSelect }) => {
+  ({ pokemon,
+    onPokemonSelect,
+    visibleTypes,
+    onTypeSelect,
+  }) => {
     const [loadedPokemon, setLoadedPokemon] = useState<PokemonData | null>(null);
     const [isError, setError] = useState(false);
+    const [pokemonTypes, setPokemonTypes] = useState<typesOfPokemons[]>([])
 
-    const getPokemon = async (url: string) => {
-      try {
-        let data = await fetch(url);
+    const getTypes = useCallback(
+      (pokemonTypesToParse: PokemonType[]) => {
 
-        if (!data.ok) {
-          throw new Error('Problem with loading');
+        return pokemonTypesToParse.reduce((acc: typesOfPokemons[], { type }) => {
+          const typeName = type.name;
+          const foundType = typeObjects
+            .find(typeObject => (
+              typeObject.type.toLocaleLowerCase() === typeName
+            ));
+
+          return foundType
+            ? [...acc, foundType]
+            : acc;
+        }, []);
+      },
+      []
+    )
+
+    const getPokemon = useCallback(
+      async (url: string) => {
+        try {
+          let data = await fetch(url);
+
+          if (!data.ok) {
+            throw new Error('Problem with loading');
+          }
+
+          const {
+            name,
+            id,
+            stats,
+            abilities,
+            types,
+            sprites,
+            weight,
+          } = await data.json();
+
+          setPokemonTypes(getTypes(types));
+
+          setLoadedPokemon({
+            name,
+            id,
+            stats,
+            abilities,
+            types,
+            sprites,
+            weight,
+          });
+        } catch (e) {
+          setError(true);
         }
+      },
+      [getTypes],
+    )
 
-        const {
-          name,
-          id,
-          stats,
-          abilities,
-          types,
-          sprites,
-          weight,
-        } = await data.json();
-
-        setLoadedPokemon({
-          name,
-          id,
-          stats,
-          abilities,
-          types,
-          sprites,
-          weight,
-        });
-      } catch (e) {
-        setError(true);
-      }
+    const handleTypeSelect = (
+      event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      type: string,
+    ) => {
+      event.stopPropagation();
+      onTypeSelect(type);
     }
 
     useEffect(() => {
       getPokemon(pokemon.url);
-    }, [pokemon])
+    }, [pokemon, getPokemon])
 
     return (
       <Card
-        onClick={() => onSelect(loadedPokemon)}
+        onClick={() => onPokemonSelect(loadedPokemon)}
         sx={{ maxWidth: 250 }}
       >
         <CardActionArea sx={{ height: '300px' }}>
@@ -86,6 +127,23 @@ export const PacemonCard: FC<Props> = memo(
                   }}>
                   {loadedPokemon?.name}
                 </Typography>
+
+                <div className='type-selector type-selector--on-card'>
+                  {
+                    pokemonTypes.map(({ color, type }) => (
+                      <CustomButton
+                        onClick={(event) => { handleTypeSelect(event, type) }}
+                        key={type}
+                        text={type}
+                        styles={{
+                          width: '75px',
+                          height: '30px',
+                          background: color,
+                        }}
+                      />
+                    ))
+                  }
+                </div>
               </CardContent>
             </>
           )}

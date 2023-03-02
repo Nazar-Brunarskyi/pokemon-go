@@ -7,7 +7,7 @@ import { CardActionArea } from '@mui/material';
 import { CustomTable } from './CustomTable';
 import { NOT_FOUND_IMG } from '../links';
 import { PokemonData } from '../types.ts/PokemonTypes';
-import { CastomButton } from './button';
+import { CustomButton } from './button';
 
 interface Props {
   pokemon: PokemonData;
@@ -16,8 +16,6 @@ interface Props {
 
 export const PokemonAbout: FC<Props> = memo(
   ({ pokemon, onHide }) => {
-    console.log(pokemon);
-
     const getInfo = (pokemonToParse: PokemonData): [string, string | number][] => {
       const info: any = {};
       info.weight = pokemonToParse.weight;
@@ -49,16 +47,16 @@ export const PokemonAbout: FC<Props> = memo(
             }}
           />
           <CardContent>
-          <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                  }}>
-                  {`${pokemon.name} #${pokemon.id}`}
-                </Typography>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}>
+              {`${pokemon.name} #${pokemon.id}`}
+            </Typography>
 
             <CustomTable tableRows={getInfo(pokemon)} />
           </CardContent>
@@ -68,7 +66,7 @@ export const PokemonAbout: FC<Props> = memo(
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-            <CastomButton
+            <CustomButton
               text='Hide'
               styles={{ margin: '10px', width: '50%' }}
               onClick={onHide}

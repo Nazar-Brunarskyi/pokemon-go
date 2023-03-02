@@ -9,7 +9,7 @@ interface Props {
   isLoading?: boolean
 }
 
-export const CastomButton: FC<Props> = memo(
+export const CustomButton: FC<Props> = memo(
   ({
     text,
     styles,
@@ -18,15 +18,16 @@ export const CastomButton: FC<Props> = memo(
   }) => {
     return (
       <Button
+        
         onClick={onClick}
         variant="contained"
         disableElevation
-        sx={{height: '50px', ...styles}}
+        sx={{ height: '50px', ...styles }}
         component='span'
       >
         {
           isLoading
-            ? <Loader color='inherit'/>
+            ? <Loader color='inherit' />
             : text
         }
       </Button>

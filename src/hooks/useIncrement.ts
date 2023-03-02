@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
-type UseIncrementReturnType = [number, () => void];
+type UseIncrementReturnType = [number, (valueToSet?: number) => void];
 
 export const useIncrement = (initialValue: number = 0): UseIncrementReturnType => {
   const [count, setCount] = useState<number>(initialValue);
 
-  function increment(): void {
-    setCount(count + 1);
+  const increment = (valueToSet?: number): void => {
+    if (valueToSet) {
+      setCount(valueToSet)
+    } else {
+      setCount(count + 1);
+    }
   }
 
   return [count, increment];

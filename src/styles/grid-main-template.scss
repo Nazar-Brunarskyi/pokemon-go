@@ -6,6 +6,10 @@
   margin: auto;
   transition: grid-template-columns 0.3s ease;
 
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr 100%;
+  }
+
   &--second-hidden {
     grid-template-columns: 1fr 0px;
   }
@@ -13,24 +17,24 @@
   &__first-column {
     position: relative;
     min-height: calc(100vh - #{$header-height});
-    max-height: calc(100vh - #{$header-height}  );
+    max-height: calc(100vh - #{$header-height});
     overflow: auto;
 
     &::-webkit-scrollbar {
       width: 5px;
       height: 12px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: transparent;
       border-radius: 10px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: #aaaaaa;
       border-radius: 10px;
     }
-    
+
     &::-webkit-scrollbar-thumb:hover {
       background: #555;
     }

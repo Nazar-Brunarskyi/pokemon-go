@@ -1,4 +1,4 @@
-import { FC, Fragment, memo } from 'react';
+import { FC, memo } from 'react';
 
 interface Props {
   tableRows: [string, string | number][];
